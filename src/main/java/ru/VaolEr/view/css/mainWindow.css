@@ -1,0 +1,103 @@
+.root {
+-fx-background-color: brown;
+}
+.SplitPaneStyle{
+    -fx-background-color: #4F4F4F;
+
+}
+.SplitPaneStyle .split-pane-divider{
+    -fx-background-color: #4F4F4F;
+}
+
+.JFXSearchTextField{
+    -fx-prompt-text-fill: #D8D8D8;
+    -fx-text-fill: #D8D8D8;
+    -jfx-unfocus-color: #D8D8D8;
+    -jfx-focus-color: #D4872F;
+}
+
+.AnchorPaneTop{
+    -fx-background-color: #4F4F4F;
+}
+.UserNameLabel{
+    -fx-text-fill: #D8D8D8;
+}
+
+.buttonSearchUser {
+    -fx-background-color: #4F4F4F;
+    -fx-text-fill: #D8D8D8;
+    -fx-alignment: center;
+    -jfx-rippler-fill: #D4872F;
+}
+.buttonSearchUser .jfx-rippler{
+    -jfx-rippler-fill: #D4872F;
+}
+
+.MessengerTextArea {
+    -fx-display-caret: false;
+    -fx-background-color: #2D2D2D;
+}
+
+.MessengerTextArea .content{
+    -fx-background-color: #2D2D2D;
+}
+
+.JFXMessageTextField{
+    -fx-prompt-text-fill: #D8D8D8;
+    -fx-text-fill: #D8D8D8;
+    -jfx-unfocus-color: #D8D8D8;
+    -jfx-focus-color: #D4872F;
+}
+
+
+.JFXTreeTableViewUsers .table-row-cell:selected {
+    -fx-text-fill: red;
+    -fx-background-color: #BEBACE;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+    -fx-selection-bar: #BEBACE;
+    -fx-selection-bar-non-focused: #BEBACE;
+}
+.JFXTreeTableViewUsers .table-row-cell {
+    -fx-background-color: #2A2734;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+    -fx-selection-bar: #BEBACE;
+    -fx-selection-bar-non-focused: #BEBACE;
+}
+
+.JFXTreeTableViewUsers{
+
+    /*-fx-selection-bar: #BEBACE;*/
+    /*-fx-selection-bar-non-focused: #BEBACE;*/
+    -fx-background-color: #2A2734;
+    -fx-border-color: #2A2734;
+}
+
+.JFXTreeTableViewUsers .column-header-background{
+    -fx-background-color: #2A2734;
+    -fx-border-color: #2A2734;
+}
+.JFXTreeTableViewUsers .nested-column-header{
+    -fx-background-color: #2A2734;
+    -fx-border-color: #2A2734;
+}
+.JFXTreeTableViewUsers .table-column{
+    /*-fx-background-color: #2A2734;*/
+    -fx-text-fill: #D8D8D8;
+    -fx-border-color: #2A2734;
+    -fx-selection-bar: #BEBACE;
+}
+
+/*.JFXTreeTableViewUsers .table-row-cell:selected{*/
+/*    -fx-background-color: #BEBACE;*/
+/*    -fx-selection-bar: #BEBACE;*/
+/*}*/
+
+/*.JFXTreeTableViewUsers .label{*/
+/*    -fx-text-fill: #D8D8D8;*/
+/*}*/
+/*.JFXTreeTableViewUsers .placeholder{*/
+/*    -fx-selection-bar: #BEBACE;*/
+/*    -fx-background-color: #2A2734;*/
+/*}*/
