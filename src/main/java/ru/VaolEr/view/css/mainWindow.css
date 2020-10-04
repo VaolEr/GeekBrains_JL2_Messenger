@@ -1,9 +1,8 @@
 .root {
--fx-background-color: brown;
+
 }
 .SplitPaneStyle{
     -fx-background-color: #4F4F4F;
-
 }
 .SplitPaneStyle .split-pane-divider{
     -fx-background-color: #4F4F4F;
@@ -19,6 +18,7 @@
 .AnchorPaneTop{
     -fx-background-color: #4F4F4F;
 }
+
 .UserNameLabel{
     -fx-text-fill: #D8D8D8;
 }
@@ -49,55 +49,47 @@
     -jfx-focus-color: #D4872F;
 }
 
+/*----------- TableView style -----------*/
+.JFXTreeTableViewUsers {
+    -fx-base: #2A2734;
+    -fx-control-inner-background: #2A2734;
+    -fx-background-color: #2A2734;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 5;
+}
 
-.JFXTreeTableViewUsers .table-row-cell:selected {
-    -fx-text-fill: red;
-    -fx-background-color: #BEBACE;
-    -fx-background-insets: 0;
-    -fx-background-radius: 1;
-    -fx-selection-bar: #BEBACE;
-    -fx-selection-bar-non-focused: #BEBACE;
+.JFXTreeTableViewUsers .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.JFXTreeTableViewUsers .column-header, .table-view .filler {
+    -fx-size: 35;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: transparent;
+    -fx-border-color:
+            transparent
+            transparent
+            derive(-fx-base, 80%)
+            transparent;
+    -fx-border-insets: 0 10 1 0;
+}
+
+.JFXTreeTableViewUsers .column-header .label {
+    -fx-font-size: 12pt;
+    /*-fx-font-family: "Segoe UI Light";*/
+    -fx-text-fill: #D8D8D8;
+    -fx-alignment: center;
+    -fx-opacity: 1;
 }
 .JFXTreeTableViewUsers .table-row-cell {
-    -fx-background-color: #2A2734;
-    -fx-background-insets: 0;
-    -fx-background-radius: 1;
-    -fx-selection-bar: #BEBACE;
-    -fx-selection-bar-non-focused: #BEBACE;
+    -fx-font-size: 11pt;
+    /*-fx-background-color: -fx-focus-color;*/
+    /*-fx-background-color: #BEBACE;*/
 }
 
-.JFXTreeTableViewUsers{
-
-    /*-fx-selection-bar: #BEBACE;*/
-    /*-fx-selection-bar-non-focused: #BEBACE;*/
-    -fx-background-color: #2A2734;
-    -fx-border-color: #2A2734;
+.JFXTreeTableViewUsers .table-row-cell:filled:focused:selected {
+    -fx-background-color: -fx-focus-color;
+    /*-fx-background-color: #BEBACE;*/
 }
-
-.JFXTreeTableViewUsers .column-header-background{
-    -fx-background-color: #2A2734;
-    -fx-border-color: #2A2734;
-}
-.JFXTreeTableViewUsers .nested-column-header{
-    -fx-background-color: #2A2734;
-    -fx-border-color: #2A2734;
-}
-.JFXTreeTableViewUsers .table-column{
-    /*-fx-background-color: #2A2734;*/
-    -fx-text-fill: #D8D8D8;
-    -fx-border-color: #2A2734;
-    -fx-selection-bar: #BEBACE;
-}
-
-/*.JFXTreeTableViewUsers .table-row-cell:selected{*/
-/*    -fx-background-color: #BEBACE;*/
-/*    -fx-selection-bar: #BEBACE;*/
-/*}*/
-
-/*.JFXTreeTableViewUsers .label{*/
-/*    -fx-text-fill: #D8D8D8;*/
-/*}*/
-/*.JFXTreeTableViewUsers .placeholder{*/
-/*    -fx-selection-bar: #BEBACE;*/
-/*    -fx-background-color: #2A2734;*/
-/*}*/
+/*----------- TableView style -----------*/
