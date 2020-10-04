@@ -34,6 +34,8 @@
 }
 
 .MessengerTextArea {
+    -fx-text-fill: #D8D8D8;
+    -fx-font-size: 12pt;
     -fx-display-caret: false;
     -fx-background-color: #2D2D2D;
 }

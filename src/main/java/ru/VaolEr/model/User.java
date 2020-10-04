@@ -12,6 +12,8 @@ public class User {
 
     private ArrayList<Message>  incomingMessages = new ArrayList<>();
 
+
+
     public User() {
         this(null,null);
     }
@@ -19,6 +21,7 @@ public class User {
     public User(String nickname, String image) {
         this.nickname = new SimpleStringProperty(nickname);
         this.image  = new SimpleStringProperty(image);
+        this.incomingMessages.add(new Message(nickname+" DefultMessage"));
     }
 
     public String getNickname(){

@@ -50,7 +50,7 @@
                         <AnchorPane layoutX="14.0" layoutY="378.0" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="570.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                            <children>
                               <JFXTextField fx:id="textFieldNewMessage" layoutX="14.0" layoutY="13.0" prefHeight="25.0" prefWidth="395.0" styleClass="JFXMessageTextField" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="15.0" />
-                              <JFXButton fx:id="buttonSendMessage" buttonType="RAISED" layoutX="492.0" layoutY="13.0" styleClass="buttonSearchUser" stylesheets="@../css/mainWindow.css" text="Send messege" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0" />
+                              <JFXButton fx:id="buttonSendMessage" buttonType="RAISED" layoutX="492.0" layoutY="13.0" onAction="#buttonSendMessageClick" styleClass="buttonSearchUser" stylesheets="@../css/mainWindow.css" text="Send messege" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="15.0" />
                            </children>
                         </AnchorPane>
                         <TextArea fx:id="textAreaMessenger" editable="false" focusTraversable="false" layoutX="26.0" layoutY="94.0" prefHeight="200.0" prefWidth="200.0" promptText="Messeges will be there. This field editable false." styleClass="MessengerTextArea" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">

@@ -8,6 +8,10 @@ public class Message {
     private String messageText;
     private Date messageDate;
 
+    public Message(String messageText) {
+        this.messageText = messageText;
+    }
+
     public Message(String messageText, Date messageDate) {
         this.messageText = messageText;
         this.messageDate = messageDate;

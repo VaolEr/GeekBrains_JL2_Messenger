@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import ru.VaolEr.MainApp;
+import ru.VaolEr.model.Message;
 import ru.VaolEr.model.User;
 
 import java.util.ArrayList;
@@ -57,9 +58,30 @@ public class Controller {
         usersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showUserDetails(newValue));
 
     }
+
+    private User currentUser;
+
     private void showUserDetails(User user){
-        if(user!= null){
-            labelUserNickname.setText(user.getNickname());
+        currentUser = user;
+        if(currentUser!= null){
+            labelUserNickname.setText(currentUser.getNickname());
+            for(int i = 0; i < currentUser.getIncomingMessages().size(); i++) {
+                if(i > 0){
+                    textAreaMessenger.setText(textAreaMessenger.getText() + "\n" + currentUser.getIncomingMessages().get(i).getMessageText());
+                }
+                else{
+                    textAreaMessenger.setText(String.valueOf(currentUser.getIncomingMessages().get(i).getMessageText()));
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void buttonSendMessageClick(ActionEvent event) {
+        if(currentUser!= null) {
+            textAreaMessenger.setText(textAreaMessenger.getText() + "\n" + textFieldNewMessage.getText());
+            currentUser.addIncomingMessage(new Message(textFieldNewMessage.getText()));
+            textFieldNewMessage.setText("");
         }
     }
 
