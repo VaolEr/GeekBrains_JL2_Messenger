@@ -14,8 +14,11 @@ import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import ru.VaolEr.MainApp;
 import ru.VaolEr.model.Message;
+import ru.VaolEr.model.Network;
 import ru.VaolEr.model.User;
+import ru.VaolEr.repository.util.DateUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -43,20 +46,19 @@ public class Controller {
     @FXML
     TextArea textAreaMessenger;
     private MainApp mainApp;
-
+    private Network network;
 
     @FXML
     public void initialize(){
-        usersTable.setRowFactory(param -> {
-            TableRow<User> row = new TableRow<>();
-            return row;
-        });
-
-        usersColumn.setCellValueFactory(cellData -> cellData.getValue().propertyNickname());
-        usersImagesColumn.setCellValueFactory(cellData -> cellData.getValue().propertyImage());
-
-        usersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showUserDetails(newValue));
-
+//        usersTable.setRowFactory(param -> {
+//            TableRow<User> row = new TableRow<>();
+//            return row;
+//        });
+//
+//        usersColumn.setCellValueFactory(cellData -> cellData.getValue().propertyNickname());
+//        usersImagesColumn.setCellValueFactory(cellData -> cellData.getValue().propertyImage());
+//
+//        usersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showUserDetails(newValue));
     }
 
     private User currentUser;
@@ -78,15 +80,48 @@ public class Controller {
 
     @FXML
     private void buttonSendMessageClick(ActionEvent event) {
-        if(currentUser!= null) {
-            textAreaMessenger.setText(textAreaMessenger.getText() + "\n" + textFieldNewMessage.getText());
-            currentUser.addIncomingMessage(new Message(textFieldNewMessage.getText()));
-            textFieldNewMessage.setText("");
-        }
+//        if(currentUser!= null) {
+//            textAreaMessenger.setText(textAreaMessenger.getText() + "\n" + textFieldNewMessage.getText());
+//            currentUser.addIncomingMessage(new Message(textFieldNewMessage.getText()));
+//            textFieldNewMessage.setText("");
+//        }
+        sendMessage();
+    }
+
+    @FXML
+    public void onEnter(ActionEvent event){
+        sendMessage();
     }
 
     public void  setMainApp(MainApp mainApp){
         this.mainApp = mainApp;
         usersTable.setItems(mainApp.getUserData());
+    }
+
+    public void appendMessage(String message) {
+        textAreaMessenger.appendText(message);
+        textAreaMessenger.appendText(System.lineSeparator());
+    }
+
+    public void setUserNickName(String nickname){
+        labelUserNickname.setText(nickname);
+    }
+
+    private void sendMessage() {
+        String message = textFieldNewMessage.getText();
+        appendMessage(DateUtil.getCurrentLocalTime() + " <- Me: " +  message);
+        textFieldNewMessage.clear();
+
+        try {
+            network.getOutputStream().writeUTF(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+            String errorMessage = DateUtil.getCurrentLocalTime() + " Failed to send message!";
+            MainApp.showNetworkError(e.getMessage(), errorMessage);
+        }
+    }
+
+    public void setNetwork(Network network) {
+        this.network = network;
     }
 }
