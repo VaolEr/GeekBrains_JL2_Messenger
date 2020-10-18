@@ -4,6 +4,7 @@ import ru.VaolEr.chat.authentication.AuthenticationService;
 import ru.VaolEr.chat.authentication.BaseAuthenticationService;
 import ru.VaolEr.chat.handler.ClientHandler;
 import ru.VaolEr.chat.util.DateUtil;
+import ru.VaolEr.networkclientserver.Command;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -47,7 +48,7 @@ public class ChatServer {
         processClientConnection(clientSocket);
     }
 
-    private void processClientConnection(Socket clientSocket) throws IOException {
+    private synchronized void processClientConnection(Socket clientSocket) throws IOException {
         ClientHandler clientHandler = new ClientHandler(this, clientSocket);
         //clients.add(clientHandler);
         clientHandler.handle();
@@ -57,39 +58,44 @@ public class ChatServer {
         return authService;
     }
 
-    public void broadcastMessage(String message, ClientHandler sender) throws IOException {
-        String user = "";
-        String privateMessage = "";
-        System.out.println("/******/ " + message);
-        if(message.startsWith("/privat")){
-            System.out.println("PRIVAT");
-            String[] parts = message.split("\\s+",5);
-            user = parts[3];
-            privateMessage = "PRIVAT" + " " + parts[1] + " " + parts[4];
-            for (ClientHandler client : clients) {
-                if(client.getUserName().equals(user)){
-                    client.sendMessage(privateMessage);
-                }
+    public synchronized void broadcastMessage(ClientHandler sender, Command command) throws IOException {
+        for (ClientHandler client: clients){
+            if(client == sender){
+                continue;
             }
-        } else {
-            for (ClientHandler client : clients) {
-                if (client == sender) {
-                    continue;
-                }
-                client.sendMessage(message);
+            client.sendMessage(command);
+        }
+    }
+
+    public synchronized void sendPrivateMessage(String recipient, Command command) throws IOException {
+        for (ClientHandler client : clients) {
+            if (client.getUserName().equals(recipient)) {
+                client.sendMessage(command);
             }
         }
     }
 
-    public void subscribe(ClientHandler clientHandler){
+    public synchronized void subscribe(ClientHandler clientHandler) throws IOException {
         clients.add(clientHandler);
+        List<String> userNames = getAllUserNames();
+        broadcastMessage(null, Command.updateUsersListCommand(userNames));
     }
 
-    public void unsubscribe(ClientHandler clientHandler){
+    public synchronized void unsubscribe(ClientHandler clientHandler) throws IOException {
         clients.remove(clientHandler);
+        List<String> userNames = getAllUserNames();
+        broadcastMessage(null, Command.updateUsersListCommand(userNames));
     }
 
-    public boolean isUserNameAlreadyBusy(String userName) {
+    private List<String> getAllUserNames() {
+        List<String> usernames = new ArrayList<>();
+        for(ClientHandler client: clients){
+            usernames.add(client.getUserName());
+        }
+        return usernames;
+    }
+
+    public synchronized boolean isUserNameAlreadyBusy(String userName) {
         for (ClientHandler client : clients) {
             if(client.getUserName().equals(userName)) {
                 return true;

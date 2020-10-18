@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    //id 'application'
 }
 
 group 'ru.VaolEr'
@@ -12,7 +11,4 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    implementation project(":NetworkClientServer")
 }
-
-//mainClassName = 'ChatServer.src.main.java.ru.VaolEr.ServerApp'
