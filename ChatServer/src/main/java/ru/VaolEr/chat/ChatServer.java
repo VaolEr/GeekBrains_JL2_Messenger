@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 
 public class ChatServer {
 
@@ -50,8 +51,21 @@ public class ChatServer {
 
     private synchronized void processClientConnection(Socket clientSocket) throws IOException {
         ClientHandler clientHandler = new ClientHandler(this, clientSocket);
-        //clients.add(clientHandler);
         clientHandler.handle();
+        new java.util.Timer().schedule(
+                new TimerTask() {
+                    public void run() {
+                        if(!clientHandler.isAuthSuccessful()){
+                            System.out.println(DateUtil.getCurrentLocalTime() + " --- Client authentication session timed out! ---");
+                            try {
+                                clientHandler.closeConnection();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                },
+                5_000 );
     }
 
     public AuthenticationService getAuthService(){

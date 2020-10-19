@@ -25,7 +25,7 @@
                               <JFXButton fx:id="buttonSearchUser" buttonType="RAISED" layoutX="170.0" layoutY="26.0" ripplerFill="#7591e5" styleClass="buttonSearchUser" text="Find" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="15.0" />
                            </children>
                         </AnchorPane>
-                        <ListView fx:id="usersList" layoutX="15.0" layoutY="65.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
+                        <ListView fx:id="usersList" layoutX="15.0" layoutY="65.0" prefHeight="200.0" prefWidth="200.0" styleClass="JFXTreeTableViewUsers" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0" />
                      </children>
                   </AnchorPane>
                 <AnchorPane minHeight="455.0" minWidth="570.0" prefHeight="455.0" prefWidth="570.0" styleClass="AnchorPaneTop">

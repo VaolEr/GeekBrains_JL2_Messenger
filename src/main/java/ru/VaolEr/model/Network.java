@@ -111,7 +111,7 @@ public class Network {
                                 ErrorCommandData data = (ErrorCommandData) command.getCommandData();
                                 String message = data.getErrorMessage();
                                 Platform.runLater(() -> {
-                                    viewController.showError("ServerError",message);
+                                    viewController.showError("ServerError", message);
                                 });
                             }
                             case UPDATE_USERS_LIST -> {

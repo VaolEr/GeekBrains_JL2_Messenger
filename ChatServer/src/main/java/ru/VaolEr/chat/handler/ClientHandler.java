@@ -1,5 +1,6 @@
 package ru.VaolEr.chat.handler;
 
+import com.jcabi.aspects.Timeable;
 import ru.VaolEr.chat.ChatServer;
 import ru.VaolEr.chat.util.DateUtil;
 import ru.VaolEr.networkclientserver.Command;
@@ -13,6 +14,7 @@ import java.net.Socket;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class ClientHandler {
 
@@ -23,6 +25,7 @@ public class ClientHandler {
     private ObjectOutputStream out;
 
     private String userName = null;
+    private boolean authSuccessful = false;
 
     public ClientHandler(ChatServer server, Socket socket) {
         this.myServer = server;
@@ -33,10 +36,10 @@ public class ClientHandler {
         in = new ObjectInputStream(clientSocket.getInputStream());
         out = new ObjectOutputStream(clientSocket.getOutputStream());
 
-        new Thread(() -> {
+         new Thread(() -> {
             try {
-                Timer authenticationTimer = new Timer();
                 authentication();
+                authSuccessful = true;
                 readMessage();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -55,6 +58,10 @@ public class ClientHandler {
         return userName;
     }
 
+    public boolean isAuthSuccessful() {
+        return authSuccessful;
+    }
+
     private void readMessage() throws IOException {
         while (true){
             Command command = readCommand();
@@ -69,13 +76,13 @@ public class ClientHandler {
                     PublicMessageCommandData data = (PublicMessageCommandData) command.getCommandData();
                     String messageSender = data.getSender();
                     String messageBody = data.getMessage();
-                    myServer.broadcastMessage(this, Command.messageInfoCommand(messageSender, messageBody));
+                    myServer.broadcastMessage(this, Command.messageInfoCommand(messageBody, messageSender));
                 }
                 case PRIVATE_MESSAGE -> {
                     PrivateMessageCommandData data = (PrivateMessageCommandData) command.getCommandData();
                     String recipient = data.getReceiver();
                     String messageBody = data.getMessage();
-                    myServer.sendPrivateMessage(recipient, Command.messageInfoCommand(userName, messageBody));
+                    myServer.sendPrivateMessage(recipient, Command.messageInfoCommand(messageBody, userName));
                 }
                 default -> {
                     System.err.println("Unknown type of command " + command.getCommandType());
@@ -97,15 +104,15 @@ public class ClientHandler {
     }
 
     private void authentication() throws IOException {
-
+        boolean isAuthSuccess = false;
         while (true) {
-            Command command = readCommand();
+            Command command = readCommand();            //blocking method
             System.out.println("In authentication...");
             if(command == null){
                 continue;
             }
             if(command.getCommandType() == CommandType.AUTH){
-                boolean isAuthSuccess =  processAuthenticationCommand(command);
+                isAuthSuccess =  processAuthenticationCommand(command);
                 if(isAuthSuccess) {
                     break;
                 }
@@ -141,10 +148,15 @@ public class ClientHandler {
         }
     }
 
-    private void closeConnection() throws IOException {
-        myServer.unsubscribe(this);
-        String message = DateUtil.getCurrentLocalTime() + " " + userName + " left the chat!";
-        myServer.broadcastMessage(this, Command.messageInfoCommand(message, null));
+    public void closeConnection() throws IOException {
+        if(authSuccessful){
+            myServer.unsubscribe(this);
+            String message = DateUtil.getCurrentLocalTime() + " " + userName + " left the chat!";
+            myServer.broadcastMessage(this, Command.messageInfoCommand(message, null));
+        }
+        else{
+            sendMessage(Command.errorCommand("Authentication session timed out!"));
+        }
         clientSocket.close();
     }
 
