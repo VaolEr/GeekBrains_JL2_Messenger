@@ -5,6 +5,7 @@ import com.jfoenix.controls.JFXTextField;
 import com.sun.tools.javac.Main;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -21,6 +22,7 @@ import ru.VaolEr.repository.util.DateUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Controller {
@@ -30,12 +32,24 @@ public class Controller {
     @FXML
     JFXTextField textFieldSearchUser;
 
+//    @FXML
+//    TableView<User> usersTable;
+//    @FXML
+//    TableColumn<User, String> usersImagesColumn;
+//    @FXML
+//    TableColumn<User, String> usersColumn;
+
     @FXML
-    TableView<User> usersTable;
+    TableView<String> usersTable;
     @FXML
-    TableColumn<User, String> usersImagesColumn;
+    TableColumn<String, String> usersImagesColumn;
     @FXML
-    TableColumn<User, String> usersColumn;
+    TableColumn<String, String> usersColumn;
+
+
+    @FXML
+    ListView<String> usersList;
+
     @FXML
     Label labelUserNickname;
 
@@ -48,17 +62,41 @@ public class Controller {
     private MainApp mainApp;
     private Network network;
 
+    private String selectedRecipient;
+
     @FXML
     public void initialize(){
 //        usersTable.setRowFactory(param -> {
-//            TableRow<User> row = new TableRow<>();
+//            TableRow<String> row = new TableRow<>();
 //            return row;
 //        });
-//
+
+ //       usersTable.setItems(FXCollections.observableArrayList(NetworkChatClient.USERS_TEST_DATA));
+
 //        usersColumn.setCellValueFactory(cellData -> cellData.getValue().propertyNickname());
 //        usersImagesColumn.setCellValueFactory(cellData -> cellData.getValue().propertyImage());
 //
 //        usersTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showUserDetails(newValue));
+        usersList.setCellFactory(lv -> {
+            MultipleSelectionModel<String> selectionModel = usersList.getSelectionModel();
+            ListCell<String> cell = new ListCell<>();
+            cell.textProperty().bind(cell.itemProperty());
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                usersList.requestFocus();
+                if (! cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    if (selectionModel.getSelectedIndices().contains(index)) {
+                        selectionModel.clearSelection(index);
+                        selectedRecipient = null;
+                    } else {
+                        selectionModel.select(index);
+                        selectedRecipient = cell.getItem();
+                    }
+                    event.consume();
+                }
+            });
+            return cell ;
+        });
     }
 
     private User currentUser;
@@ -95,7 +133,7 @@ public class Controller {
 
     public void  setMainApp(MainApp mainApp){
         this.mainApp = mainApp;
-        usersTable.setItems(mainApp.getUserData());
+        //usersTable.setItems(mainApp.getUserData());
     }
 
     public void appendMessage(String message) {
@@ -113,7 +151,12 @@ public class Controller {
         textFieldNewMessage.clear();
 
         try {
-            network.getOutputStream().writeUTF(message);
+            if(selectedRecipient != null){
+                network.sendPrivateMessage(message, selectedRecipient);
+            }
+            else{
+                network.sendMessage(message);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             String errorMessage = DateUtil.getCurrentLocalTime() + " Failed to send message!";
@@ -123,5 +166,13 @@ public class Controller {
 
     public void setNetwork(Network network) {
         this.network = network;
+    }
+
+    public void showError(String title, String message) {
+        MainApp.showNetworkError(message, title);
+    }
+
+    public void updateUsers(List<String> users) {
+        usersList.setItems(FXCollections.observableArrayList(users));
     }
 }

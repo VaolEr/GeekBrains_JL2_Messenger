@@ -28,6 +28,7 @@ public class MainApp extends Application {
     private Controller viewController;
 
     private static final String MAIN_APP_FXML = "src/main/java/ru/VaolEr/view/fxml/mainWindow.fxml";
+    private static final String MAIN_APP_FXML_LIST = "src/main/java/ru/VaolEr/view/fxml/mainWindowList.fxml";
     private static final String AUTH_DIALOG_FXML = "src/main/java/ru/VaolEr/view/fxml/authenticationDialog.fxml";
     private final UsersRepository usersRepository;
     private final ObservableList<User> userData;
@@ -85,7 +86,7 @@ public class MainApp extends Application {
 
         //Parent root = FXMLLoader.load(getClass().getResource("../resources/mainWindow.fxml"));
 
-        URL url = new File(MAIN_APP_FXML).toURL();
+        URL url = new File(MAIN_APP_FXML_LIST).toURL();
         //Parent root = FXMLLoader.load(url);
 
         FXMLLoader loader = new FXMLLoader();

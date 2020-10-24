@@ -1,2 +1,4 @@
 rootProject.name = 'GeekBrains_JL2_Chat'
 include 'ChatServer'
+include 'NetworkClientServer'
+

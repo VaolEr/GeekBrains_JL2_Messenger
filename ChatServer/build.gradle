@@ -12,6 +12,9 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation project(":NetworkClientServer")
+    // https://mvnrepository.com/artifact/com.jcabi/jcabi-aspects
+    compile group: 'com.jcabi', name: 'jcabi-aspects', version: '0.22.5'
 }
 
 //mainClassName = 'ChatServer.src.main.java.ru.VaolEr.ServerApp'
