@@ -39,6 +39,13 @@ public class Command implements Serializable {
         return  command;
     }
 
+    public static Command changeNicknameCommand(String sender, String nickname) {
+        Command command = new Command();
+        command.commandType  = CommandType.CHANGE_NICKNAME;
+        command.commandData = new ChangeNicknameCommandData(sender, nickname);
+        return command;
+    }
+
     public static Command errorCommand(String errorMessage) {
         Command command = new Command();
         command.commandType = CommandType.ERROR;

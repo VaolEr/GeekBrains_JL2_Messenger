@@ -155,12 +155,25 @@ public class Controller {
                 network.sendPrivateMessage(message, selectedRecipient);
             }
             else{
-                network.sendMessage(message);
+                if(message.startsWith("/cN")){
+                    String[] parts = message.split("\\s+",2);
+                    String newUsername = parts[1];
+                    if(!newUsername.equals("")) {
+                        network.changeNicknameMessage(this.labelUserNickname.getText(), newUsername);
+                    } else{
+                        appendMessage(DateUtil.getCurrentLocalTime() + " ERROR: new NickName not valid.");
+                    }
+                }else {
+                    network.sendMessage(message);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
             String errorMessage = DateUtil.getCurrentLocalTime() + " Failed to send message!";
             MainApp.showNetworkError(e.getMessage(), errorMessage);
+        }
+        catch (ArrayIndexOutOfBoundsException e){
+            appendMessage(DateUtil.getCurrentLocalTime() + " ERROR: new NickName not valid.");
         }
     }
 

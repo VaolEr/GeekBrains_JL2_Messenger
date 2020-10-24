@@ -6,6 +6,7 @@ import ru.VaolEr.chat.util.DateUtil;
 import ru.VaolEr.networkclientserver.Command;
 import ru.VaolEr.networkclientserver.CommandType;
 import ru.VaolEr.networkclientserver.commands.AuthenticationCommandData;
+import ru.VaolEr.networkclientserver.commands.ChangeNicknameCommandData;
 import ru.VaolEr.networkclientserver.commands.PrivateMessageCommandData;
 import ru.VaolEr.networkclientserver.commands.PublicMessageCommandData;
 
@@ -84,6 +85,13 @@ public class ClientHandler {
                     String messageBody = data.getMessage();
                     myServer.sendPrivateMessage(recipient, Command.messageInfoCommand(messageBody, userName));
                 }
+                case CHANGE_NICKNAME -> {
+                    ChangeNicknameCommandData data = (ChangeNicknameCommandData) command.getCommandData();
+                    String user = data.getSender();
+                    String newNickname = data.getNickname();
+                    myServer.updateNickname(user, newNickname);
+                    myServer.sendPrivateMessage(user, Command.messageInfoCommand("Nickname will be changed after reconnect", "Server"));
+                }
                 default -> {
                     System.err.println("Unknown type of command " + command.getCommandType());
                 }
@@ -127,8 +135,10 @@ public class ClientHandler {
         AuthenticationCommandData data = (AuthenticationCommandData) command.getCommandData();
         String login = data.getLogin();
         String password = data.getPassword();
+
         this.userName = myServer.getAuthService().getUsernameByLoginAndPassword(login,password);
         System.out.println(this.userName + " authentication...");
+
         if(myServer.isUserNameAlreadyBusy(this.userName)){
             sendMessage(Command.authenticationErrorCommand("Login and password are already used."));
             System.out.println(this.userName + " Login and password are already used.");

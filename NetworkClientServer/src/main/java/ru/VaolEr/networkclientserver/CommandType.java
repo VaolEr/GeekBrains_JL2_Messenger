@@ -4,10 +4,11 @@ public enum CommandType {
     AUTH,
     AUTH_OK,
     AUTH_ERROR,
-    UPDATE_USERS_LIST,
-    SERVER_MESSAGE,
+    CHANGE_NICKNAME,
+    ERROR,
+    END,
     PUBLIC_MESSAGE,
     PRIVATE_MESSAGE,
-    ERROR,
-    END
+    SERVER_MESSAGE,
+    UPDATE_USERS_LIST
 }
