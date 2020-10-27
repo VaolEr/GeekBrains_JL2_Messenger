@@ -45,4 +45,9 @@ public class BaseAuthenticationService implements AuthenticationService {
         System.out.println(DateUtil.getCurrentLocalTime() + " ~ Authentication has been finished. ~");
         //TODO disconnect from database here
     }
+
+    @Override
+    public void changeNickname(String username, String newUsername) {
+
+    }
 }

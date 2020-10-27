@@ -2,6 +2,7 @@ package ru.VaolEr.chat;
 
 import ru.VaolEr.chat.authentication.AuthenticationService;
 import ru.VaolEr.chat.authentication.BaseAuthenticationService;
+import ru.VaolEr.chat.authentication.DataBaseAuthService;
 import ru.VaolEr.chat.handler.ClientHandler;
 import ru.VaolEr.chat.util.DateUtil;
 import ru.VaolEr.networkclientserver.Command;
@@ -9,20 +10,25 @@ import ru.VaolEr.networkclientserver.Command;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 
 public class ChatServer {
 
-
     private final ServerSocket serverSocket;
+
     private final List<ClientHandler> clients = new ArrayList<>();
+
     private final AuthenticationService authService;
+
+    private final int authTime = 120_000;
 
     public ChatServer(int port) throws IOException {
         this.serverSocket = new ServerSocket(port);
-        this.authService = new BaseAuthenticationService();
+        //this.authService = new BaseAuthenticationService();
+        this.authService = new DataBaseAuthService();
     }
     public void start() throws IOException {
         System.out.println(DateUtil.getCurrentLocalTime() + " --- Server started ---");
@@ -65,7 +71,7 @@ public class ChatServer {
                         }
                     }
                 },
-                5_000 );
+                authTime );
     }
 
     public AuthenticationService getAuthService(){
@@ -116,5 +122,9 @@ public class ChatServer {
             }
         }
         return false;
+    }
+
+    public void updateNickname(String user, String newNickname) {
+        authService.changeNickname(user, newNickname);
     }
 }

@@ -6,4 +6,6 @@ public interface AuthenticationService {
     String getUsernameByLoginAndPassword(String login, String password);
 
     void stop();
+
+    void changeNickname(String username, String newUsername);
 }

@@ -86,6 +86,11 @@ public class Network {
         outputStream.writeObject(command);
     }
 
+    public void changeNicknameMessage(String sender, String newNickname)  throws IOException{
+        Command command  = Command.changeNicknameCommand(sender, newNickname);
+        sendCommand(command);
+    }
+
     public void waitMessages(Controller viewController) {
         Thread thread = new Thread(new Runnable() {
             @Override
