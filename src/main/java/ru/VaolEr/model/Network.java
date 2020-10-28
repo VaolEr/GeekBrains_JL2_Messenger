@@ -9,6 +9,8 @@ import ru.VaolEr.repository.util.DateUtil;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class Network {
 
@@ -21,6 +23,10 @@ public class Network {
     private ObjectOutputStream outputStream;
     private Socket socket;
     private String username;
+
+    private String messagesHistoryFilePath;
+    private BufferedWriter bufferedFileWriter;
+    private boolean isMessageHistoryFileExist = false;
 
     public Network() {
         this(SERVER_ADDRESS, SERVER_PORT);
@@ -40,6 +46,11 @@ public class Network {
         } catch (IOException e) {
             System.err.println("Connection was not set!");
             e.printStackTrace();
+            try {
+                bufferedFileWriter.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
             return false;
         }
     }
@@ -56,6 +67,10 @@ public class Network {
                 case AUTH_OK-> {
                     AuthenticationOkCommandData data = (AuthenticationOkCommandData) command.getCommandData();
                     this.username = data.getUsername();
+                    messagesHistoryFilePath = "history_" + this.username +".txt";
+                    File file = new File(messagesHistoryFilePath);
+                    isMessageHistoryFileExist = file.exists();
+                    bufferedFileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(messagesHistoryFilePath, true), StandardCharsets.UTF_8));
                     return null;
                 }
                 case AUTH_ERROR -> {
@@ -163,10 +178,57 @@ public class Network {
 
     }
 
+    public void appendMessageToFile(String message){
+        String text = message + "\n";
+        try {
+            bufferedFileWriter.write(text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+
+    public void readLast100MessageFromHistory(Controller viewController){
+        ArrayList<String> allMessages = new ArrayList<>();
+        ArrayList<String> last100Messages = new ArrayList<>();
+        try {
+            if (isMessageHistoryFileExist){
+                BufferedReader reader = new BufferedReader(new FileReader(messagesHistoryFilePath,StandardCharsets.UTF_8));
+                String line = reader.readLine();
+                allMessages.add(line);
+                while (line != null) {
+                    allMessages.add(line);
+                    line = reader.readLine();
+                }
+                reader.close();
+
+                int countOfMessages = allMessages.size();
+                System.out.println("count of messages " +countOfMessages);
+                if(countOfMessages <= 100){
+                    for (int i = 0; i < countOfMessages; i++) {
+                        String message = allMessages.get(i);
+                        last100Messages.add(message);
+                    }
+                }else {
+                    for (int i = 0; i < 100; i++) {
+                        String message = allMessages.get(countOfMessages - 100 + i);
+                        last100Messages.add(message);
+                    }
+                }
+            }
+            else{
+                last100Messages.add("");
+            }
+            viewController.loadLast100Messages(last100Messages);
+        }catch (IOException e){
+            last100Messages.add("IO file error");
+            e.printStackTrace();
+        }
+    }
 
     public void close() {
         try {
+            bufferedFileWriter.close();
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();

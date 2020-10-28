@@ -18,6 +18,7 @@ import ru.VaolEr.model.Message;
 import ru.VaolEr.model.Network;
 import ru.VaolEr.model.User;
 import ru.VaolEr.repository.util.DateUtil;
+import ru.VaolEr.util.FileReadWriteUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -97,6 +98,7 @@ public class Controller {
             });
             return cell ;
         });
+
     }
 
     private User currentUser;
@@ -139,6 +141,10 @@ public class Controller {
     public void appendMessage(String message) {
         textAreaMessenger.appendText(message);
         textAreaMessenger.appendText(System.lineSeparator());
+//        String username = this.labelUserNickname.getText();
+//        String filePath = "history_" + username + ".txt";
+//        FileReadWriteUtil.addMessageToLocalHistoryFile(filePath, username, message);
+        network.appendMessageToFile(message);
     }
 
     public void setUserNickName(String nickname){
@@ -187,5 +193,13 @@ public class Controller {
 
     public void updateUsers(List<String> users) {
         usersList.setItems(FXCollections.observableArrayList(users));
+    }
+
+    public void loadLast100Messages(ArrayList<String> last100messages){
+        //ArrayList<String> last100messages = network.readLast100MessageFromHistory();
+        for (String last100message : last100messages) {
+            textAreaMessenger.appendText(last100message);
+            textAreaMessenger.appendText(System.lineSeparator());
+        }
     }
 }

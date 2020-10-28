@@ -50,6 +50,7 @@ public class MainApp extends Application {
         authDialogStage.close();
         primaryStage.show();
         primaryStage.setTitle(network.getUsername());
+        network.readLast100MessageFromHistory(viewController);
         network.waitMessages(viewController);
         network.changeNickNameInView(viewController);
     }
@@ -111,7 +112,6 @@ public class MainApp extends Application {
         viewController.setNetwork(network);
 
         //        network.waitMessages(viewController);
-
         primaryStage.setOnCloseRequest(event -> {
             network.close();
         });
