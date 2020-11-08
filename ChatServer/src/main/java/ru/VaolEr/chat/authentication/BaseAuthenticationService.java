@@ -1,14 +1,17 @@
 package ru.VaolEr.chat.authentication;
 
+import ru.VaolEr.ServerApp;
 import ru.VaolEr.chat.User;
 import ru.VaolEr.chat.util.DateUtil;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class BaseAuthenticationService implements AuthenticationService {
 
+    private static final Logger logger = Logger.getLogger(BaseAuthenticationService.class.getName());
 //    private static final Map<String, String> USERS= new HashMap<>(){{
 //        put("L1","P1");
 //        put("L2","P2");

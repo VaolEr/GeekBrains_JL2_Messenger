@@ -1,6 +1,7 @@
 package ru.VaolEr.chat.handler;
 
 import com.jcabi.aspects.Timeable;
+import ru.VaolEr.ServerApp;
 import ru.VaolEr.chat.ChatServer;
 import ru.VaolEr.chat.util.DateUtil;
 import ru.VaolEr.networkclientserver.Command;
@@ -13,11 +14,15 @@ import ru.VaolEr.networkclientserver.commands.PublicMessageCommandData;
 import java.io.*;
 import java.net.Socket;
 
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class ClientHandler {
+
+    private static final Logger logger = Logger.getLogger(ClientHandler.class.getName());
 
     private final ChatServer myServer;
     private final Socket clientSocket;
@@ -43,12 +48,14 @@ public class ClientHandler {
                 authSuccessful = true;
                 readMessage();
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                logger.severe(Arrays.toString(e.getStackTrace()));
             } finally {
                 try {
                     closeConnection();
                 } catch (IOException e) {
-                    System.err.println("Failed to close client socket.");
+                    //System.err.println("Failed to close client socket.");
+                    logger.severe("Failed to close client socket.");
                 }
             }
         }).start();
@@ -78,12 +85,14 @@ public class ClientHandler {
                     String messageSender = data.getSender();
                     String messageBody = data.getMessage();
                     myServer.broadcastMessage(this, Command.messageInfoCommand(messageBody, messageSender));
+                    logger.info("PUBLIC_MESSAGE from " + this.userName);
                 }
                 case PRIVATE_MESSAGE -> {
                     PrivateMessageCommandData data = (PrivateMessageCommandData) command.getCommandData();
                     String recipient = data.getReceiver();
                     String messageBody = data.getMessage();
                     myServer.sendPrivateMessage(recipient, Command.messageInfoCommand(messageBody, userName));
+                    logger.info("PRIVATE_MESSAGE from " + this.userName);
                 }
                 case CHANGE_NICKNAME -> {
                     ChangeNicknameCommandData data = (ChangeNicknameCommandData) command.getCommandData();
@@ -91,9 +100,11 @@ public class ClientHandler {
                     String newNickname = data.getNickname();
                     myServer.updateNickname(user, newNickname);
                     myServer.sendPrivateMessage(user, Command.messageInfoCommand("Nickname will be changed after reconnect", "Server"));
+                    logger.info("CHANGE_NICKNAME from " + this.userName);
                 }
                 default -> {
-                    System.err.println("Unknown type of command " + command.getCommandType());
+                    //System.err.println("Unknown type of command " + command.getCommandType());
+                    logger.severe("Unknown type of command " + command.getCommandType());
                 }
             }
         }
@@ -104,9 +115,11 @@ public class ClientHandler {
             return (Command) in.readObject();
         } catch (ClassNotFoundException e) {
             String errorMessage = "Unknown type of object from client!";
-            System.err.println(errorMessage);
+            //System.err.println(errorMessage);
+            logger.severe(errorMessage);
             sendMessage(Command.errorCommand(errorMessage));
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.severe(Arrays.toString(e.getStackTrace()));
             return null;
         }
     }
@@ -115,7 +128,8 @@ public class ClientHandler {
         boolean isAuthSuccess = false;
         while (true) {
             Command command = readCommand();            //blocking method
-            System.out.println("In authentication...");
+            //System.out.println("In authentication...");
+            logger.info("In authentication...");
             if(command == null){
                 continue;
             }
@@ -126,7 +140,8 @@ public class ClientHandler {
                 }
             } else{
                 sendMessage(Command.authenticationErrorCommand("/auth command is required"));
-                System.out.println(this.userName + "Authentication command is required");
+                //System.out.println(this.userName + "Authentication command is required");
+                logger.severe(this.userName + "Authentication command is required");
             }
         }
     }
@@ -137,23 +152,27 @@ public class ClientHandler {
         String password = data.getPassword();
 
         this.userName = myServer.getAuthService().getUsernameByLoginAndPassword(login,password);
-        System.out.println(this.userName + " authentication...");
+        //System.out.println(this.userName + " authentication...");
+        logger.info(this.userName + " authentication...");
 
         if(myServer.isUserNameAlreadyBusy(this.userName)){
             sendMessage(Command.authenticationErrorCommand("Login and password are already used."));
-            System.out.println(this.userName + " Login and password are already used.");
+            //System.out.println(this.userName + " Login and password are already used.");
+            logger.info(this.userName + " Login and password are already used.");
             return false;
         }
         else if(this.userName != null && !myServer.isUserNameAlreadyBusy(this.userName)){
             sendMessage(Command.authenticationOkCommand(this.userName));
-            System.out.println(this.userName + " authentication successful!");
+            //System.out.println(this.userName + " authentication successful!");
+            logger.info(this.userName + " authentication successful!");
             String message = this.userName + " joined to chat!";
             myServer.broadcastMessage(this, Command.messageInfoCommand(message, null));
             myServer.subscribe(this);
             return true;
         } else {
             sendMessage(Command.authenticationErrorCommand("Invalid login or password."));
-            System.out.println(this.userName + " Invalid login or password.");
+            //System.out.println(this.userName + " Invalid login or password.");
+            logger.info(this.userName + " Invalid login or password.");
             return false;
         }
     }
@@ -166,6 +185,7 @@ public class ClientHandler {
         }
         else{
             sendMessage(Command.errorCommand("Authentication session timed out!"));
+            logger.severe(this.userName + "Authentication session timed out!");
         }
         clientSocket.close();
     }

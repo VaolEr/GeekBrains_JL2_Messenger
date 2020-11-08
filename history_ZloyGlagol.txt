@@ -106,3 +106,10 @@
 21:02 -> Strix: Привыет, глагол
 21:02 <- Me: Здороу стурикс
 21:02 -> Server: 21:02 Strix left the chat!
+20:54 <- Me: adadada
+20:54 <- Me: dadad
+20:54 -> Server: Strix joined to chat!
+20:55 -> Strix: adadadad
+20:55 -> Server: 20:55 Strix left the chat!
+21:04 <- Me: adada
+21:04 <- Me: adad

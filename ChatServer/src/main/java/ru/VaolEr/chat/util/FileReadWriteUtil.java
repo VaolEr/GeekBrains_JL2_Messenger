@@ -1,12 +1,19 @@
 package ru.VaolEr.chat.util;
 
+import ru.VaolEr.ServerApp;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class FileReadWriteUtil {
+
+    private static final Logger logger = Logger.getLogger(FileReadWriteUtil.class.getName());
+
     public static void main(String[] args) {
         String username = "StriX";
         String filePath = "history_" + username + ".txt";
@@ -28,9 +35,11 @@ public class FileReadWriteUtil {
         String text = message + "\n";
         try {
             writeStringToFile(filePath, text);
+            logger.info("Add message to history.");
         }
         catch (IOException e) {
-            System.out.println(e);
+            //System.out.println(e);
+            logger.severe(e.toString());
         }
     }
 
@@ -69,7 +78,8 @@ public class FileReadWriteUtil {
             writeStringToFile(filePath, text);
         }
         catch (IOException e) {
-            System.out.println(e);
+            //System.out.println(e);
+            logger.severe(e.toString());
         }
     }
 
@@ -104,7 +114,8 @@ public class FileReadWriteUtil {
             //System.out.println("//**********************************//");
             bufferWriter.close();
         } catch(Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.severe(Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -162,7 +173,8 @@ public class FileReadWriteUtil {
             writer.print("");
             writer.close();
         }catch (Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.severe(Arrays.toString(e.getStackTrace()));
         }
     }
 

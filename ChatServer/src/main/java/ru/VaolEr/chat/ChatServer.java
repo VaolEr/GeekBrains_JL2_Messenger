@@ -1,5 +1,6 @@
 package ru.VaolEr.chat;
 
+import ru.VaolEr.ServerApp;
 import ru.VaolEr.chat.authentication.AuthenticationService;
 import ru.VaolEr.chat.authentication.BaseAuthenticationService;
 import ru.VaolEr.chat.authentication.DataBaseAuthService;
@@ -12,12 +13,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
 public class ChatServer {
 
     private final ServerSocket serverSocket;
+
+    private static final Logger logger = Logger.getLogger(ChatServer.class.getName());
 
     private final List<ClientHandler> clients = new ArrayList<>();
 
@@ -30,17 +35,20 @@ public class ChatServer {
         //this.authService = new BaseAuthenticationService();
         this.authService = new DataBaseAuthService();
     }
-    public void start() throws IOException {
-        System.out.println(DateUtil.getCurrentLocalTime() + " --- Server started ---");
 
+    public void start() throws IOException {
+        //System.out.println(DateUtil.getCurrentLocalTime() + " --- Server started ---");
+        logger.severe(" --- Server started ---");
         authService.start();
         try {
             while (true){
                 waitAndProcessNewClient();
             }
         } catch (IOException e) {
-            System.err.println(DateUtil.getCurrentLocalTime() + " --- Failed to accept new connection. ---");
-            e.printStackTrace();
+            //System.err.println(DateUtil.getCurrentLocalTime() + " --- Failed to accept new connection. ---");
+            logger.severe(" --- Failed to accept new connection. ---");
+            logger.severe(Arrays.toString(e.getStackTrace()));
+            //e.printStackTrace();
         } finally {
             authService.stop();
             serverSocket.close();
@@ -49,9 +57,11 @@ public class ChatServer {
     }
 
     private void waitAndProcessNewClient() throws IOException {
-        System.out.println(DateUtil.getCurrentLocalTime() + " --- Waiting for new connection ---");
+        //System.out.println(DateUtil.getCurrentLocalTime() + " --- Waiting for new connection ---");
+        logger.info(" --- Waiting for new connection ---");
         Socket clientSocket = serverSocket.accept();
-        System.out.println(DateUtil.getCurrentLocalTime() + " --- Client connected! ---");
+        //System.out.println(DateUtil.getCurrentLocalTime() + " --- Client connected! ---");
+        logger.info(" --- Client connected! ---");
         processClientConnection(clientSocket);
     }
 
@@ -62,11 +72,13 @@ public class ChatServer {
                 new TimerTask() {
                     public void run() {
                         if(!clientHandler.isAuthSuccessful()){
-                            System.out.println(DateUtil.getCurrentLocalTime() + " --- Client authentication session timed out! ---");
+                            //System.out.println(DateUtil.getCurrentLocalTime() + " --- Client authentication session timed out! ---");
+                            logger.severe(" --- Client authentication session timed out! ---");
                             try {
                                 clientHandler.closeConnection();
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                //e.printStackTrace();
+                                logger.severe(Arrays.toString(e.getStackTrace()));
                             }
                         }
                     }
