@@ -1,14 +1,19 @@
 package ru.VaolEr.chat.authentication;
 
+import ru.VaolEr.ServerApp;
 import ru.VaolEr.chat.User;
 import ru.VaolEr.chat.util.DateUtil;
 
 import java.sql.*;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class DataBaseAuthService implements AuthenticationService {
+
+    private static final Logger logger = Logger.getLogger(DataBaseAuthService.class.getName());
 
     private Connection connection;
     private Statement statement;
@@ -19,15 +24,19 @@ public class DataBaseAuthService implements AuthenticationService {
 
     @Override
     public void start() {
-        System.out.println(DateUtil.getCurrentLocalTime() + " ~~~ Authentication has been started... ~~~");
+        //System.out.println(DateUtil.getCurrentLocalTime() + " ~~~ Authentication has been started... ~~~");
+        logger.info(" ~~~ Authentication has been started... ~~~");
         try {
             clientsDbConnect();
-            System.out.println(DateUtil.getCurrentLocalTime() + " ~~~ Connect to clients.db successful! ~~~");
+            //System.out.println(DateUtil.getCurrentLocalTime() + " ~~~ Connect to clients.db successful! ~~~");
+            logger.info(" ~~~ Connect to clients.db successful! ~~~");
             prepareAllStatements();
             //exGetAllUsers();
         } catch (ClassNotFoundException | SQLException e) {
-            System.err.println(DateUtil.getCurrentLocalTime() + " ~~~ Failed connection to clients.db. ~~~");
-            e.printStackTrace();
+            //System.err.println(DateUtil.getCurrentLocalTime() + " ~~~ Failed connection to clients.db. ~~~");
+            logger.severe(" ~~~ Failed connection to clients.db. ~~~");
+            //e.printStackTrace();
+            logger.severe(Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -41,30 +50,34 @@ public class DataBaseAuthService implements AuthenticationService {
             ResultSet rs = pStmtGetUsernameByLoginAndPassword.executeQuery();
 
             String username = rs.getString("username");
-            System.out.println(username);
+            //System.out.println(username);
             return username;
 
         } catch (Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.severe(Arrays.toString(e.getStackTrace()));
         }
         return null; // bad solve to return null
     }
 
     @Override
     public void stop() {
-        System.out.println(DateUtil.getCurrentLocalTime() + " ~ Authentication has been finished. ~");
+        //System.out.println(DateUtil.getCurrentLocalTime() + " ~ Authentication has been finished. ~");
+        logger.info(" ~ Authentication has been finished. ~");
         clientsDbDisconnect();
     }
 
     @Override
     public void changeNickname(String username, String newUsername) {
         try {
-            System.out.println(username + " -> " + newUsername);
+            //System.out.println(username + " -> " + newUsername);
+            logger.info(username + " -> " + newUsername);
             pStmtUpdateNickname.setString(1, newUsername);
             pStmtUpdateNickname.setString(2, username);
             pStmtUpdateNickname.executeUpdate();
         }catch (Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.severe(Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -77,12 +90,14 @@ public class DataBaseAuthService implements AuthenticationService {
         try {
             statement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.severe(Arrays.toString(e.getStackTrace()));
         }
         try {
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.severe(Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -93,7 +108,8 @@ public class DataBaseAuthService implements AuthenticationService {
     public void exGetAllUsers() throws SQLException {
         ResultSet rs = statement.executeQuery("SELECT login, password, username, status FROM clients;");
         while(rs.next()){
-            System.out.println(rs.getString("login") + " " + rs.getString("password") + " " + rs.getString("username") + " " + rs.getBoolean("status"));
+            //System.out.println(rs.getString("login") + " " + rs.getString("password") + " " + rs.getString("username") + " " + rs.getBoolean("status"));
+            logger.info(rs.getString("login") + " " + rs.getString("password") + " " + rs.getString("username") + " " + rs.getBoolean("status"));
         }
     }
 
